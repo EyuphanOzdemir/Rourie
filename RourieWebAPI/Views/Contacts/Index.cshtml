@@ -1,0 +1,102 @@
+﻿@model RourieWebAPI.Models.ContactListViewModel
+
+@{
+    var description = "Contacts";
+    ViewData["Title"] = description;
+}
+<h1>@description</h1>
+
+<p>
+    <a asp-action="Create">Create New Contact</a>
+</p>
+@{
+    var prevId = @Model.PageId - 1;
+    var nextId = @Model.PageId + 1;
+
+    string rowCountMessage = "";
+    if (@Model.RowCount == 0)
+    {
+        rowCountMessage = "No contact found!";
+    }
+    else
+    {
+        rowCountMessage = @Model.RowCount + " contact(s) found";
+    }
+}
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index" method="get">
+            <div class="form-group">
+                <label class="control-label">Company:</label>
+                <select asp-for=SearchCompanyId class="form-control" asp-items="@ViewBag.CompanySelectList"></select>
+                <label asp-for=SearchTerm class="control-label">Search:</label>
+                <input asp-for=SearchTerm class="form-control valid" type="text" data-val="true" data-val-minlength="The search term should have at least 3 characters" data-val-minlength-min="3" placeholder="Enter a search term with at least 3 characters">
+                <span class="text-danger field-validation-valid" data-valmsg-for="SearchTerm" data-valmsg-replace="true"></span>
+                <span>@rowCountMessage</span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<br />
+<br />
+
+<div class="row">
+
+    @if (prevId > 0)
+    {
+        <a asp-action="Index" asp-route-pageId="1" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCategoryId="@Model.SearchCompanyId"> First 10  </a>
+        <a asp-action="Index" asp-route-pageId="@prevId" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCategoryId="@Model.SearchCompanyId"> | Previous 10  </a>
+    }
+
+
+    @if (nextId <= Model.GroupCount)
+    {
+        <a asp-action="Index" asp-route-pageId="@nextId" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCategoryId="@Model.SearchCompanyId"> | Next 10  </a>
+        <a asp-action="Index" asp-route-pageId="@Model.GroupCount" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCategoryId="@Model.SearchCompanyId"> | Last 10  </a>
+    }
+
+</div>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <span value="Name">Company</span>
+            </th>
+            <th>
+                <span value="Name">Name</span>
+            </th>
+            <th>
+                <span value="Job Title">Job Title</span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Contacts)
+        {
+            string text = item.Name.Length > 20 ? item.Name.Substring(0, 20) + "..." : item.Name;
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Company.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.JobTitle)
+            </td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

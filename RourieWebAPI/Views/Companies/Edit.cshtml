@@ -1,0 +1,32 @@
+﻿@model DBAccessLibrary.Company
+@{
+    var description = "Edit Company";
+    ViewData["Title"] = description;
+}
+<h1>@description</h1>
+<h4>@ViewBag.Message</h4>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" asp-route-id="@Model.Id">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for=Name class="control-label"></label>
+                <input asp-for=Name class="form-control" placeholder="Name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for=Address class="control-label"></label>
+                <textarea asp-for=Address class="form-control" rows="5" cols="40" placeholder="Address"></textarea>
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
