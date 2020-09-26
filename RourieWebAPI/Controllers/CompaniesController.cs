@@ -6,6 +6,10 @@ using DBAccessLibrary;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
+using Microsoft.Extensions.Logging;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.Extensions.Options;
 
 namespace RourieWebAPI.Controllers
 {
@@ -13,11 +17,15 @@ namespace RourieWebAPI.Controllers
     public class CompaniesController : Controller
     {
         private readonly ICompanyRepository companyRepository;
+        private readonly ILogger<CompaniesController> logger;
+        private string UserId { get {return User.FindFirstValue(ClaimTypes.NameIdentifier);} }
 
-        public CompaniesController(ICompanyRepository companyRepository)
+        public CompaniesController(ICompanyRepository companyRepository, ILogger<CompaniesController> logger)
         {
             this.companyRepository = companyRepository;
+            this.logger = logger;
         }
+
 
         // GET: Companies
         public IActionResult Index()
@@ -58,7 +66,12 @@ namespace RourieWebAPI.Controllers
                     return View(company);
                 }
                 await companyRepository.AddAsync(company);
-                TempData["Message"] = "Company successfuly added";
+                //for unit test project try-catch and if (logger!=null) 
+                //unit test project has no access to TempData and NLog object
+                try { TempData["Message"] = "Company successfuly added"; } catch(Exception e) {  };
+                if (logger!=null) 
+                    logger.LogInformation(String.Format("==============The user with id {0} added a company with name {1}==============", UserId,company.Name));
+                //
                 return RedirectToAction(nameof(Index));
             }
             else

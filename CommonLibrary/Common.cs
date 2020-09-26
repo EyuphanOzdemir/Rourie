@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace CommonLibrary
 {
@@ -10,9 +11,7 @@ namespace CommonLibrary
     {
         public static class Regex
         {
-            public const string UserName = @"^[a - zA - Z0 - 9] + (?:[_ -]?[a - zA - Z0 - 9]) *$";
-            public const string Password = @"^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{4,8}$";
-            public const string Email = @"^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$";
+            public const string PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
         }
 
 

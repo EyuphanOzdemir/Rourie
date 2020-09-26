@@ -10,20 +10,20 @@ using Microsoft.AspNetCore.Mvc;
 using RourieWebAPI.Models;
 using DBAccessLibrary;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace RourieWebAPI.Controllers
 {
     public class AccountController : Controller
     {
         private readonly DataContext _context;
-        private CookieAuthenticationOptions _cookieAuthenticationOptions;
-        private readonly string loginPath;
+        private readonly IUserRepository userRepository;
 
-        public AccountController(DataContext context, IOptionsMonitor<CookieAuthenticationOptions> options)
+
+        public AccountController(DataContext context, IUserRepository userRepository)
         {
             _context = context;
-            this._cookieAuthenticationOptions = options.CurrentValue;
-            loginPath = options.Get("").LoginPath;
+            this.userRepository = userRepository;
         }
         public IActionResult Login(string returnUrl = null)
         {
@@ -40,21 +40,22 @@ namespace RourieWebAPI.Controllers
 
 
             ClaimsIdentity identity = null;
-            
-            User _user=_context.Users.SingleOrDefault(user => user.UserName.Equals(loginModel.UserName) && user.Password.Equals(loginModel.Password));
-            
-            if (_user==null)
+
+            User _user = _context.Users.SingleOrDefault(user => user.UserName.Equals(loginModel.UserName) && user.Password.Equals(loginModel.Password));
+
+            if (_user == null)
             {
                 ModelState.AddModelError(String.Empty, "There is no such a user. Please try again.");
                 return View();
             }
-            else  
-            if (_user.UserType==1)
+            else
+            if (_user.UserType == 1)
             {
                 //Create the identity for the admin
                 identity = new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.Name, _user.UserName),
                     new Claim(ClaimTypes.Role, "Admin"),
+                    new Claim(ClaimTypes.NameIdentifier, _user.Id.ToString()),
                     new Claim(ClaimTypes.UserData, _user.Id.ToString())
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
             }
@@ -64,6 +65,7 @@ namespace RourieWebAPI.Controllers
                 identity = new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.Name, _user.UserName),
                     new Claim(ClaimTypes.Role, "Normal"),
+
                     new Claim(ClaimTypes.UserData, _user.Id.ToString())
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
             }
@@ -76,6 +78,45 @@ namespace RourieWebAPI.Controllers
             else
                 return Redirect(returnUrl);
         }
+
+
+        [HttpGet]
+        public IActionResult ChangePassword()
+        {
+            ChangePasswordModel model = new ChangePasswordModel();
+            return View(model);
+        }
+
+        // POST: Companies/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
+                User user = userRepository.Get(int.Parse(userId));
+                user.Password = model.Password1;
+                await userRepository.UpdateAsync(user);
+                ViewBag.Message = "Password was changed successfuly";
+            }
+            else
+            {
+                foreach (var errorCollection in ModelState.Values)
+                {
+                    foreach (ModelError error in errorCollection.Errors)
+                    {
+                        ModelState.AddModelError(String.Empty, error.ErrorMessage);
+                    }
+                }
+            }
+            return View(model);
+        }
+
+
+
 
         [Authorize]
         public IActionResult Logout()

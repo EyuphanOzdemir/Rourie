@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using RourieWebAPI.Models;
 using RourieWebAPI.Classes;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
+using System.Security.Claims;
 
 namespace RourieWebAPI.Controllers
 {
@@ -18,10 +20,14 @@ namespace RourieWebAPI.Controllers
     {
         private readonly IContactRepository contactRepository;
         private readonly ICompanyRepository companyRepository;
-        public ContactsController(IContactRepository contactRepository, ICompanyRepository companyRepository)
+        private readonly ILogger<ContactsController> logger;
+        private string UserId { get { return User.FindFirstValue(ClaimTypes.NameIdentifier); } }
+
+        public ContactsController(IContactRepository contactRepository, ICompanyRepository companyRepository, ILogger<ContactsController> logger)
         {
             this.contactRepository = contactRepository;
             this.companyRepository = companyRepository;
+            this.logger = logger;
         }
 
         // GET and post: contactRepository
@@ -71,6 +77,7 @@ namespace RourieWebAPI.Controllers
                 {
                     await contactRepository.AddAsync(model.contact);
                     TempData["Message"] = "Contact added successfully";
+                    logger.LogInformation(String.Format("==============The user with id {0} added a contact with name {1}==============", UserId, "\""+model.contact.Name+"\""));
                     return RedirectToAction(nameof(Index));
                 }
             }

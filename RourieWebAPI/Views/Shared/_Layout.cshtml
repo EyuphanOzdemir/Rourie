@@ -27,7 +27,7 @@
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Companies" asp-action="Create">Creat Company</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Companies" asp-action="Create">Create Company</a>
                                 </li>
 
                                 <li class="nav-item">
@@ -51,9 +51,12 @@
                                 }
 
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Log out</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangePassword">Change Password</a>
                                 </li>
 
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Log out</a>
+                                </li>
 
                             }
                             else
@@ -61,6 +64,7 @@
                                 <li class="nav-item">
                                     <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
                                 </li>
+
                             }
                         }
 

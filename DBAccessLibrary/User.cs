@@ -21,13 +21,15 @@ namespace DBAccessLibrary
         }
 
         [StringLength(60)]
-        [Required]
+        [MinLength(5, ErrorMessage ="The username should be at least 5 characters")]
         public string UserName { get; set; }
 
 
         [StringLength(250)]
         [Required]
         [DataType(DataType.Password)]
+        [RegularExpression(CommonLibrary.Common.Regex.PASSWORD_REGEX, 
+            ErrorMessage = "The password should be 8 characters, and contain at least 1 Alphabet, 1 Number or 1 Special Character")]
         public string Password { get; set; }
 
         public int UserType { get; set; }

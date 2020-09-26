@@ -9,6 +9,7 @@ using DBAccessLibrary;
 using Microsoft.AspNetCore.Authorization;
 using RourieWebAPI.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Security.Claims;
 
 namespace RourieWebAPI.Controllers
 {
@@ -65,6 +66,9 @@ namespace RourieWebAPI.Controllers
                 return View(user);
             }
         }
+
+
+ 
 
         #region "Delete"
         // GET: Users/Delete/5
