@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DBAccessLibrary.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200925092028_initial")]
+    [Migration("20200926055402_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -52,11 +52,6 @@ namespace DBAccessLibrary.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(500)")
-                        .HasMaxLength(500);
-
                     b.Property<int>("CompanyId")
                         .HasColumnType("int");
 
@@ -72,7 +67,8 @@ namespace DBAccessLibrary.Migrations
 
                     b.Property<string>("MobileNumber")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(15)")
+                        .HasMaxLength(15);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -95,11 +91,6 @@ namespace DBAccessLibrary.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(250)")
-                        .HasMaxLength(250);
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(250)")
@@ -110,10 +101,10 @@ namespace DBAccessLibrary.Migrations
                         .HasColumnType("nvarchar(60)")
                         .HasMaxLength(60);
 
-                    b.HasKey("Id");
+                    b.Property<int>("UserType")
+                        .HasColumnType("int");
 
-                    b.HasIndex("Email")
-                        .IsUnique();
+                    b.HasKey("Id");
 
                     b.HasIndex("UserName")
                         .IsUnique();
@@ -124,9 +115,9 @@ namespace DBAccessLibrary.Migrations
                         new
                         {
                             Id = 1,
-                            Email = "ozdemireyuphan@gmail.com",
-                            Password = "a",
-                            UserName = "a"
+                            Password = "admin",
+                            UserName = "admin",
+                            UserType = 1
                         });
                 });
 

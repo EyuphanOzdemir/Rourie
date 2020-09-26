@@ -25,9 +25,9 @@ namespace RourieWebAPI.Controllers
         [Route("500")]
         public IActionResult AppError()
         {
-            //return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, Explanation="500!", QueryString = HttpContext.Request.QueryString.Value });
             // Retrieve the exception Details
             var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            //for ogging purposes
             ViewBag.ExceptionPath = exceptionHandlerPathFeature.Path;
             ViewBag.ExceptionMessage = exceptionHandlerPathFeature.Error.Message;
             ViewBag.StackTrace = exceptionHandlerPathFeature.Error.StackTrace;

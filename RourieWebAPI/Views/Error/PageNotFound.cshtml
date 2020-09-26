@@ -1,19 +1,18 @@
 ﻿@model RourieWebAPI.Models.ErrorViewModel
 @{
-    ViewData["Title"] = "PageNotFound";
+    ViewData["Title"] = "Page Not Found";
 }
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">The resouce cannot be found!</h2>
+
+<h8 class="text-danger message">The resouce cannot be found!</h8>
 @if (Model.ShowRequestId)
 {
 <p>
     <strong>Request ID:</strong> <code> @Model.RequestId </code>
     <strong>Response code:</strong> <code> @Model.Explanation</code>
-    <strong>Query  string:</strong> <code> @Model.QueryString</code>
 </p>
 
 <p>
-    @Html.ActionLink("Go to home","Index", "Home")
+    @Html.ActionLink("Go to companies","Index", "Companies")
 </p>
 }
 

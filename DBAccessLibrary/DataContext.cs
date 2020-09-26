@@ -31,8 +31,8 @@ namespace DBAccessLibrary
             //User table
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<User>().HasIndex(e => e.UserName).IsUnique();
-            modelBuilder.Entity<User>().HasIndex(e => e.Email).IsUnique(); //for seeding data HasData
-            modelBuilder.Entity<User>().HasData(new User {Id=1, UserName="a", Email="ozdemireyuphan@gmail.com", Password="a" });
+            modelBuilder.Entity<User>().HasData(new User {Id=1, UserName="admin", Password="admin", UserType=1 });
+            modelBuilder.Entity<User>().HasData(new User { Id = 2, UserName = "test", Password = "test", UserType = 0 });
             //Company table
             modelBuilder.Entity<Company>().ToTable("Company");
             modelBuilder.Entity<Company>().HasIndex(e => e.Name).IsUnique();

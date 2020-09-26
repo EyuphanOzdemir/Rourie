@@ -1,10 +1,9 @@
 ﻿@model DBAccessLibrary.Company
 @{
-    var description = "Edit Company";
-    ViewData["Title"] = description;
+    ViewData["Title"] = "Edit Company";
 }
-<h1>@description</h1>
-<h4>@ViewBag.Message</h4>
+
+@await Html.PartialAsync("_Message")
 
 <hr />
 <div class="row">

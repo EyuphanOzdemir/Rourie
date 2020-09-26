@@ -14,26 +14,22 @@ namespace DBAccessLibrary
         {
         }
 
-        public User(string userName, string email, string password)
+        public User(string userName, string password)
         {
             this.UserName = userName;
-            this.Email = email;
             this.Password = password;
         }
 
-        [StringLength(60), MinLength(1)]
+        [StringLength(60)]
         [Required]
-        [RegularExpression(CommonLibrary.Common.Regex.UserName)]
         public string UserName { get; set; }
 
-        [StringLength(250), MinLength(1)]
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        public string Email { get; set; }
 
-        [StringLength(250), MinLength(1)]
+        [StringLength(250)]
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        public int UserType { get; set; }
     }
 }

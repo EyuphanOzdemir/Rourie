@@ -28,14 +28,15 @@ namespace RourieWebAPI.Controllers
 
         public async Task<IActionResult> Index(ContactListViewModel model)
         {
+            //the following line can be used to see what will happen when an exception occurs
+            //in this case a special exception page should welcome the user (AppError.cshtml)
+            //throw new Exception();
             model.RowCount =await contactRepository.CountAsync(model.SearchTerm, model.SearchCompanyId);
 
-            if (model.PageId < 1) 
-                model.PageId = 1;
+            if (model.PageId < 1) model.PageId = 1;
             else if (model.PageId > model.GroupCount && model.PageId > 1)
                 model.PageId = model.GroupCount;
 
-            
             model.Contacts =contactRepository.Select(model.PageId, model.SearchTerm, model.SearchCompanyId).ToList();
             AddCompanyListToViewBag(model.SearchCompanyId, "All companies");
             return View(model);
@@ -43,10 +44,12 @@ namespace RourieWebAPI.Controllers
 
 
         // GET: Contacts/Create
-        public IActionResult Create()
+        public IActionResult Create(int companyId=0)
         {
-            ContactViewModel model = new ContactViewModel(new Contact());
-            AddCompanyListToViewBag(0, "Select a company");
+            int companyCount = companyRepository.CountAll();
+            ContactViewModel model = new ContactViewModel(new Contact(),companyCount);
+            model.contact.CompanyId = companyId;
+            AddCompanyListToViewBag(companyId);
             return View(model);
         }
 
@@ -59,8 +62,17 @@ namespace RourieWebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                await contactRepository.AddAsync(model.contact);
-                return RedirectToAction(nameof(Index));
+                if (contactRepository.EmailExists(model.contact.Email))
+                    ModelState.AddModelError(String.Empty, "There is already a contact with this email");
+                else
+                if (contactRepository.MobileNumberExists(model.contact.MobileNumber))
+                    ModelState.AddModelError(String.Empty, "There is already a contact with this mobile number");
+                else
+                {
+                    await contactRepository.AddAsync(model.contact);
+                    TempData["Message"] = "Contact added successfully";
+                    return RedirectToAction(nameof(Index));
+                }
             }
             else
             {
@@ -71,10 +83,9 @@ namespace RourieWebAPI.Controllers
                         ModelState.AddModelError(String.Empty, error.ErrorMessage);
                     }
                 }
-
-                AddCompanyListToViewBag(model.contact.CompanyId);
-                return View(model);
             }
+            AddCompanyListToViewBag(model.contact.CompanyId);
+            return View(model);
         }
 
         // GET: Questions/Edit/5
@@ -83,7 +94,7 @@ namespace RourieWebAPI.Controllers
             if (!contactRepository.Exists(id))
                 return NotFound();
 
-            ContactViewModel model = new ContactViewModel(await contactRepository.GetAsync(id));
+            ContactViewModel model = new ContactViewModel(await contactRepository.GetAsync(id), companyRepository.CountAll());
             AddCompanyListToViewBag(model.contact.CompanyId);
             return View(model);
         }
@@ -95,12 +106,20 @@ namespace RourieWebAPI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ContactViewModel model)
         {
-            AddCompanyListToViewBag(model.contact.CompanyId);
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await contactRepository.UpdateAsync(model.contact);
+                    if (contactRepository.EmailExists(model.contact.Email, model.contact.Id))
+                        ModelState.AddModelError(String.Empty, "There is already a contact with this email");
+                    else
+                    if (contactRepository.MobileNumberExists(model.contact.MobileNumber, model.contact.Id))
+                        ModelState.AddModelError(String.Empty, "There is already a contact with this mobile number");
+                    else
+                    {
+                        await contactRepository.UpdateAsync(model.contact);
+                        ViewBag.Message = "The contact was updated successfully.";
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -113,7 +132,6 @@ namespace RourieWebAPI.Controllers
                         throw;
                     }
                 }
-                ViewBag.Message = "The contact was updated successfully.";
             }
             else
             {
@@ -125,6 +143,7 @@ namespace RourieWebAPI.Controllers
                     }
                 }
             }
+            AddCompanyListToViewBag(model.contact.CompanyId);
             return View(model);
         }
 
@@ -148,16 +167,30 @@ namespace RourieWebAPI.Controllers
             if (!contactRepository.Exists(id))
                 return NotFound();
              contactRepository.Delete(id);
-             return RedirectToAction(nameof(Index));
+            TempData["Message"] = "Contact deleted";
+            return RedirectToAction(nameof(Index));
         }
 
-        private bool AddCompanyListToViewBag(int companyID, string selectText="")
+        public async Task<IActionResult> Details(int id)
+        {
+            var contact = await contactRepository.GetAsync(id);
+            if (contact == null)
+            {
+                return NotFound();
+            }
+
+            return View(contact);
+        }
+
+        private bool AddCompanyListToViewBag(int companyID, string selectText="Select a company")
         {
             try
             {
                 Utility utility = new Utility();
                 List<Company> companyList = utility.GetCompanySelectList(companyRepository, selectText);
-                ViewBag.CompanySelectList = new SelectList(companyList, "Id", "Name", companyID);
+                SelectList companySelectList = new SelectList(companyList, "Id", "Name", companyID);
+                //companySelectList.FirstOrDefault(item => item.Value == companyID.ToString()).Selected = true;
+                ViewBag.CompanySelectList = companySelectList;
                 return true;
             }
             catch
@@ -166,4 +199,6 @@ namespace RourieWebAPI.Controllers
             }
         }
     }
+
+
 }

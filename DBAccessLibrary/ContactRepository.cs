@@ -25,7 +25,7 @@ namespace DBAccessLibrary
 
         public int Count(string search, int selectorId)
         {
-            return dbContext.Contacts.Count(u => (selectorId == 0 || u.Id == selectorId) &&
+            return dbContext.Contacts.Count(u => (selectorId == 0 || u.CompanyId == selectorId) &&
                                                 (String.IsNullOrEmpty(search) || u.Name.Contains(search)));
         }
 
@@ -47,16 +47,18 @@ namespace DBAccessLibrary
 
         public Contact Get(int Id)
         {
-            return dbContext.Contacts.Find(Id);
+            return dbContext.Contacts.Include(e => e.Company).FirstOrDefault(c => c.Id == Id);
         }
 
-        public IEnumerable<Contact> Select(int pageID, string search, int selectorId)
+        public IEnumerable<Contact> Select(int pageID,string search, int selectorId)
         {
-            return dbContext.Contacts.Include(e => e.Company).Where<Contact>(u => String.IsNullOrEmpty(search) || u.Name.Contains(search)
+            return dbContext.Contacts.Where<Contact>(u => (selectorId == 0 || u.CompanyId == selectorId) &&
+                                               (String.IsNullOrEmpty(search) || u.Name.Contains(search))
                                            )
                                            .OrderByDescending(u => u.Id)
                                            .Skip((pageID - 1) * 10)
                                            .Take(10)
+                                           .Include(e => e.Company)
                                            .ToList();
         }
 
@@ -74,6 +76,27 @@ namespace DBAccessLibrary
             return Get(id) != null;
         }
 
+
+        public bool EmailExists(string email)
+        {
+            return dbContext.Contacts.Any(c => c.Email == email);
+        }
+
+        public bool EmailExists(string email, int exceptContactId)
+        {
+            return dbContext.Contacts.Any(c => c.Email == email && c.Id != exceptContactId);
+        }
+
+        public bool MobileNumberExists(string mobileNumber)
+        {
+            return dbContext.Contacts.Any(c => c.MobileNumber == mobileNumber);
+        }
+
+        public bool MobileNumberExists(string mobileNumber, int exceptContactId)
+        {
+            return dbContext.Contacts.Any(c => c.MobileNumber == mobileNumber && c.Id != exceptContactId);
+        }
+
         //Async methods
         public async Task<Contact> AddAsync(Contact contact)
         {
@@ -84,8 +107,8 @@ namespace DBAccessLibrary
 
         public async Task<int> CountAsync(string search, int selectorId)
         {
-            return await dbContext.Contacts.CountAsync(u => (selectorId == 0 || u.Id == selectorId) &&
-                                                (String.IsNullOrEmpty(search) || u.Name.Contains(search)));
+            return await dbContext.Contacts.CountAsync(u => (selectorId == 0 || u.CompanyId== selectorId) &&
+                                               (String.IsNullOrEmpty(search) || u.Name.Contains(search)));
         }
 
         public async Task<Contact> DeleteAsync(int id)
@@ -102,7 +125,7 @@ namespace DBAccessLibrary
 
         public async Task<Contact> GetAsync(int Id)
         {
-            return await dbContext.Contacts.FindAsync(Id);
+            return await dbContext.Contacts.Include(e => e.Company).FirstOrDefaultAsync(c=>c.Id==Id);
         }
 
 
@@ -113,6 +136,7 @@ namespace DBAccessLibrary
             await dbContext.SaveChangesAsync();
             return contact;
         }
+
 
     }
 }

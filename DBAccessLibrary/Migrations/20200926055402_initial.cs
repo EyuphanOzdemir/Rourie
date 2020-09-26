@@ -27,8 +27,8 @@ namespace DBAccessLibrary.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserName = table.Column<string>(maxLength: 60, nullable: false),
-                    Email = table.Column<string>(maxLength: 250, nullable: false),
-                    Password = table.Column<string>(maxLength: 250, nullable: false)
+                    Password = table.Column<string>(maxLength: 250, nullable: false),
+                    UserType = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -42,11 +42,10 @@ namespace DBAccessLibrary.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CompanyId = table.Column<int>(nullable: false),
-                    Address = table.Column<string>(maxLength: 500, nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     JobTitle = table.Column<string>(maxLength: 250, nullable: false),
                     Email = table.Column<string>(maxLength: 250, nullable: false),
-                    MobileNumber = table.Column<string>(nullable: false)
+                    MobileNumber = table.Column<string>(maxLength: 15, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -61,8 +60,8 @@ namespace DBAccessLibrary.Migrations
 
             migrationBuilder.InsertData(
                 table: "User",
-                columns: new[] { "Id", "Email", "Password", "UserName" },
-                values: new object[] { 1, "ozdemireyuphan@gmail.com", "a", "a" });
+                columns: new[] { "Id", "Password", "UserName", "UserType" },
+                values: new object[] { 1, "admin", "admin", 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Company_Name",
@@ -79,12 +78,6 @@ namespace DBAccessLibrary.Migrations
                 name: "IX_Contact_Email",
                 table: "Contact",
                 column: "Email");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_User_Email",
-                table: "User",
-                column: "Email",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_UserName",

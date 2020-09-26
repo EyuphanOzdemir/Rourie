@@ -53,11 +53,12 @@ namespace RourieWebAPI.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (companyRepository.GetAll().Any(c=>c.Name==company.Name)){
+                if (companyRepository.NameExists(company.Name)){
                     ModelState.AddModelError(string.Empty, "There is already a company with this name");
                     return View(company);
                 }
                 await companyRepository.AddAsync(company);
+                TempData["Message"] = "Company successfuly added";
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -95,7 +96,13 @@ namespace RourieWebAPI.Controllers
             {
                 try
                 {
-                    await companyRepository.UpdateAsync(company);
+                    if (companyRepository.NameExists(company.Name,company.Id))
+                        ModelState.AddModelError(string.Empty, "There is already a company with this name");
+                    else {
+                        await companyRepository.UpdateAsync(company);
+                        ViewBag.Message = "Successfuly saved";
+                    }
+
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -108,7 +115,6 @@ namespace RourieWebAPI.Controllers
                         throw;
                     }
                 }
-                ViewBag.Message = "Successfuly saved";
             }
             else
             {
@@ -141,6 +147,7 @@ namespace RourieWebAPI.Controllers
                 return NotFound();
 
             companyRepository.Delete(id);
+            TempData["Message"] = "Company deleted";
             return RedirectToAction(nameof(Index));
         }
     }

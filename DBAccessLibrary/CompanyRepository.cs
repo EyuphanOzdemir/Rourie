@@ -42,7 +42,7 @@ namespace DBAccessLibrary
 
         public IEnumerable<Company> GetAll()
         {
-            return dbContext.Companies;
+            return dbContext.Companies.OrderBy(c => c.Name);
         }
 
         public Company Get(int Id)
@@ -72,6 +72,21 @@ namespace DBAccessLibrary
         public bool Exists(int id)
         {
             return Get(id) != null;
+        }
+
+        public bool NameExists(string name)
+        {
+            return dbContext.Companies.Any(c => c.Name == name);
+        }
+
+        public bool NameExists(string name, int id)
+        {
+            return dbContext.Companies.Any(c => c.Name == name && c.Id != id);
+        }
+
+        public int CountAll()
+        {
+            return dbContext.Companies.Count();
         }
 
         //Async methods
@@ -113,6 +128,7 @@ namespace DBAccessLibrary
             await dbContext.SaveChangesAsync();
             return company;
         }
+
 
     }
 }

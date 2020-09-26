@@ -1,10 +1,15 @@
 ﻿@model RourieWebAPI.Models.ContactViewModel
 
 @{
-    var description = "Create Contact";
-    ViewData["Title"] = description;
+    ViewData["Title"] = "Create Contact";
 }
-<h1>@description</h1>
+
+
+@if (Model.CompanyCount == 0)
+{
+    <h8 class="message">There is no company in the system. Please start defining companies...</h8>
+}
+
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -12,27 +17,28 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for=contact.CompanyId class="control-label"></label>
-                <select asp-for=contact.CompanyId class="form-control" asp-items="ViewBag.CompanySelectList"></select>
+                <select asp-for=contact.CompanyId class="form-control" asp-items="@ViewBag.CompanySelectList"></select>
+                <a asp-action="Create" asp-controller="Companies">Add company</a>
                 <span asp-validation-for=contact.CompanyId class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for=contact.Name class="control-label" name="Text"></label>
-                <textarea asp-for=contact.Name class="form-control" text-wrap:normal" type="text" rows="5" placeholder="Please add your experience here"></textarea>
+                <input asp-for=contact.Name class="form-control" text-wrap:normal" type="text" rows="5" placeholder="Name"/>
                 <span asp-validation-for=contact.Name class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for=contact.JobTitle class="control-label"></label>
-                <input asp-for=contact.JobTitle class="form-control" />
+                <input asp-for=contact.JobTitle class="form-control" placeholder="Job Title" />
                 <span asp-validation-for=contact.JobTitle class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for=contact.Email class="control-label"></label>
-                <input asp-for=contact.Email class="form-control" />
+                <input asp-for=contact.Email class="form-control" placeholder="Email" />
                 <span asp-validation-for=contact.Email class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for=contact.MobileNumber class="control-label"></label>
-                <input asp-for=contact.MobileNumber class="form-control" />
+                <input asp-for=contact.MobileNumber class="form-control" placeholder="Mobile Number (e.g. 0211649977)" />
                 <span asp-validation-for=contact.MobileNumber class="text-danger"></span>
             </div>
 

@@ -1,0 +1,8 @@
+﻿@if (ViewBag.Message!=null)
+{
+    <h8 class="message">@ViewBag.Message</h8>
+}
+else @if (TempData["Message"] != null)
+{
+    <h8 class="message">@TempData["Message"]</h8>
+}

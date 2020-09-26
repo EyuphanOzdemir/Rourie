@@ -8,68 +8,69 @@ using Microsoft.EntityFrameworkCore;
 using DBAccessLibrary;
 using Microsoft.AspNetCore.Authorization;
 using RourieWebAPI.Models;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace RourieWebAPI.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
-        private readonly DataContext _context;
+        private readonly IUserRepository userRepository;
 
-        public UsersController(DataContext context)
+        public UsersController(IUserRepository userRepository)
         {
-            _context = context;
+            this.userRepository = userRepository;
         }
 
         // GET: Users
-        public async Task<IActionResult> Index(int pageId = 1, string search = "")
+        public IActionResult Index()
         {
-            UserViewModel model = new UserViewModel();
-            model.PageId = pageId;
-            model.SearchTerm = search;
-            
-
-            bool doSearch = !String.IsNullOrEmpty(model.SearchTerm) && model.SearchTerm.Length >= 3;
-
-            Func<User, bool> searchPredicate = (u => (u.UserName + u.Email).Contains(model.SearchTerm));
-            Func<User, bool> totalPredicate = (u => (!doSearch || searchPredicate(u)));
-
-            model.RowCount = _context.Users.Count(u => totalPredicate(u));
-
-            if (model.PageId < 1) model.PageId = 1;
-            else if (model.PageId > model.GroupCount && model.PageId > 1) model.PageId = model.GroupCount;
-
-            IQueryable<User> users = null;
-
-            users = _context.Users.Where(u => totalPredicate(u)).Skip((pageId - 1) * 10).Take(10);
-            model.Users = await users.ToListAsync();
-
-            return View(model);
+            return View(userRepository.GetAll().ToList());
         }
 
-        private bool UserExists(int id)
+        public IActionResult Create()
         {
-            return _context.Users.Any(e => e.Id == id);
+            return View();
         }
 
-        private void DeleteUser(int userId)
+        // POST: Companies/Create
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(User user)
         {
-            User user = _context.Users.SingleOrDefault(u => u.Id == userId);
-            _context.SaveChanges();
+            if (ModelState.IsValid)
+            {
+                if (userRepository.NameExists(user.UserName))
+                {
+                    ModelState.AddModelError(string.Empty, "There is already a user with this user name");
+                    return View(user);
+                }
+                
+                user.UserType = 0;
+                await userRepository.AddAsync(user);
+                TempData["Message"] = "User successfuly added";
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                foreach (var errorCollection in ModelState.Values)
+                {
+                    foreach (ModelError error in errorCollection.Errors)
+                    {
+                        ModelState.AddModelError(String.Empty, error.ErrorMessage);
+                    }
+                }
+                return View(user);
+            }
         }
-
 
         #region "Delete"
         // GET: Users/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var user = await userRepository.GetAsync(id);
             if (user == null)
             {
                 return NotFound();
@@ -83,7 +84,19 @@ namespace RourieWebAPI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
-            DeleteUser(id);
+            User user = userRepository.Get(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            else if (user.UserType == 1) //admin user
+                TempData["Message"] = "You attempted to delete an admin, which is impossible!";
+            else
+            {
+                userRepository.Delete(id);
+                TempData["Message"] = "The user was successfuly deleted";
+            }
+
             return RedirectToAction(nameof(Index));
         }
         #endregion

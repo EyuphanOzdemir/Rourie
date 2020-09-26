@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace RourieWebAPI.Models
 {
-    public class ContactListViewModel : _NavigateModel
+    public class ContactListViewModel : _NavigateAndSearchModel
     {
         public int SearchCompanyId { get; set; }
         public List<Contact> Contacts;

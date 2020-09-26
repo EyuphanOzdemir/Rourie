@@ -40,31 +40,41 @@ namespace RourieWebAPI.Controllers
 
 
             ClaimsIdentity identity = null;
-
+            
             User _user=_context.Users.SingleOrDefault(user => user.UserName.Equals(loginModel.UserName) && user.Password.Equals(loginModel.Password));
+            
             if (_user==null)
             {
                 ModelState.AddModelError(String.Empty, "There is no such a user. Please try again.");
                 return View();
             }
-            else
+            else  
+            if (_user.UserType==1)
             {
-                //Create the identity for the user
+                //Create the identity for the admin
                 identity = new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.Name, _user.UserName),
                     new Claim(ClaimTypes.Role, "Admin"),
                     new Claim(ClaimTypes.UserData, _user.Id.ToString())
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                var principal = new ClaimsPrincipal(identity);
-
-                var login = HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-
-                if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
-                    return RedirectToAction("Index", "Companies");
-                else
-                    return Redirect(returnUrl);
             }
+            else
+            {
+                //Create the identity for normal user
+                identity = new ClaimsIdentity(new[] {
+                    new Claim(ClaimTypes.Name, _user.UserName),
+                    new Claim(ClaimTypes.Role, "Normal"),
+                    new Claim(ClaimTypes.UserData, _user.Id.ToString())
+                }, CookieAuthenticationDefaults.AuthenticationScheme);
+            }
+            var principal = new ClaimsPrincipal(identity);
+
+            var login = HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
+                return RedirectToAction("Index", "Companies");
+            else
+                return Redirect(returnUrl);
         }
 
         [Authorize]

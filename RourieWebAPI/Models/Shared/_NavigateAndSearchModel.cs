@@ -3,7 +3,7 @@
 
 namespace RourieWebAPI.Models.Shared
 {
-    public class _NavigateModel
+    public class _NavigateAndSearchModel
     {
         private double rowCount;
         private int groupCount;

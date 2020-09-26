@@ -7,7 +7,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
+
 
 namespace RourieWebAPI
 {
@@ -26,8 +26,6 @@ namespace RourieWebAPI
                          logging.AddConsole();
                          logging.AddDebug();
                          logging.AddEventSourceLogger();
-                         // Enable NLog as one of the Logging Provider
-                         logging.AddNLog();
                      })
                     .UseStartup<Startup>();
     }

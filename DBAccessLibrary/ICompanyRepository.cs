@@ -13,8 +13,12 @@ namespace DBAccessLibrary
         public Company Update(Company company);
         public Company Delete(int id);
         public int Count(string search, int selectorId);
+        public int CountAll();
         public IEnumerable<Company> Select(int pageID, string search, int selectorId);
         public bool Exists(int id);
+        public bool NameExists(string name);
+        public bool NameExists(string name, int id);
+
         //async methods
         public Task<Company> GetASync(int Id);
         public Task<Company> AddAsync(Company company);

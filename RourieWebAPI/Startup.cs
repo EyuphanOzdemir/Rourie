@@ -45,6 +45,7 @@ namespace RourieWebAPI
 
             services.AddTransient<IContactRepository, ContactRepository>();
             services.AddTransient<ICompanyRepository, CompanyRepository>();
+            services.AddTransient<IUserRepository, UserRepository>();
         }
 
         /*MIDDILEWARES are pieces of software that handles request and responses
@@ -57,11 +58,16 @@ namespace RourieWebAPI
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
         {
             //request pipeline with some middlewares
-            if (env.IsDevelopment()) //or env.isEnvironment("Development") //or custom environment
-            {
+            if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
-            }
-            else app.UseExceptionHandler("/Error");
+            else
+                app.UseExceptionHandler("/Error/500"); //an important middleware
+            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            //app.UseStatusCodePages();
+            app.UseStatusCodePagesWithRedirects("/Error/{0}");
+            //or
+            //app.UseStatusCodePagesWithReExecute("/Error/{0}");
+            app.UseHsts();
 
             app.UseRouting();
 

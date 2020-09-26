@@ -13,8 +13,13 @@ namespace DBAccessLibrary
         public Contact Update(Contact contact);
         public Contact Delete(int id);
         public int Count(string search, int selectorId);
-        public IEnumerable<Contact> Select(int pageID, string search, int selectorId);
+        public IEnumerable<Contact> Select(int pageID,string search, int selectorId);
         public bool Exists(int id);
+        public bool MobileNumberExists(string mobileNumber);
+        public bool MobileNumberExists(string mobileNumber, int exceptContactId);
+        public bool EmailExists(string email, int exceptContactId);
+        public bool EmailExists(string email);
+
         //async methods
         public Task<Contact> GetAsync(int Id);
         public Task<Contact> AddAsync(Contact contact);
