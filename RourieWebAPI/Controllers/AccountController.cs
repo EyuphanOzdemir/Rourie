@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RourieWebAPI.Models;
 using DBAccessLibrary;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace RourieWebAPI.Controllers
@@ -20,11 +18,16 @@ namespace RourieWebAPI.Controllers
         private readonly IUserRepository userRepository;
 
 
+        //setting dbcontext and user repository via dependeceny injection
         public AccountController(DataContext context, IUserRepository userRepository)
         {
             _context = context;
             this.userRepository = userRepository;
         }
+        
+        //Get (if the user is not logged in firstly login is wanted, then when login is successful, the user 
+        //is directed to the resource that she wanted in the first place)
+        //GET Account/Login
         public IActionResult Login(string returnUrl = null)
         {
             ViewBag.returnUrl = returnUrl;
@@ -32,6 +35,7 @@ namespace RourieWebAPI.Controllers
         }
 
         [HttpPost]
+        //POST Account/Login with LoginModel object 
         public IActionResult Login(LoginViewModel loginModel, string returnUrl = null)
         {
             ViewBag.returnUrl = returnUrl;
@@ -40,9 +44,9 @@ namespace RourieWebAPI.Controllers
 
 
             ClaimsIdentity identity = null;
-
+            //login check
             User _user = _context.Users.SingleOrDefault(user => user.UserName.Equals(loginModel.UserName) && user.Password.Equals(loginModel.Password));
-
+            //if there is no such a user...
             if (_user == null)
             {
                 ViewBag.Message = "Please try again...";
@@ -71,8 +75,10 @@ namespace RourieWebAPI.Controllers
             }
             var principal = new ClaimsPrincipal(identity);
 
+            //write cookie
             var login = HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
+            //here the user is directed to the view she wanted to go in the beginning
             if (string.IsNullOrEmpty(returnUrl) || !Url.IsLocalUrl(returnUrl))
                 return RedirectToAction("Index", "Companies");
             else
@@ -81,15 +87,14 @@ namespace RourieWebAPI.Controllers
 
 
         [HttpGet]
+        //GET Account/ChangePassword
         public IActionResult ChangePassword()
         {
             ChangePasswordModel model = new ChangePasswordModel();
             return View(model);
         }
 
-        // POST: Companies/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Account/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordModel model)
@@ -107,6 +112,8 @@ namespace RourieWebAPI.Controllers
                     ViewBag.Message = "Current password does not match!";
                 else
                 {
+                    //everything is fine
+                    //the user stays at the same page with a success message
                     user.Password = model.Password1;
                     await userRepository.UpdateAsync(user);
                     ViewBag.Message = "Password was changed successfuly";
@@ -114,6 +121,7 @@ namespace RourieWebAPI.Controllers
             }
             else
             {
+                //if any unexpected validation error, show it in the validation summary
                 foreach (var errorCollection in ModelState.Values)
                 {
                     foreach (ModelError error in errorCollection.Errors)
@@ -122,6 +130,7 @@ namespace RourieWebAPI.Controllers
                     }
                 }
             }
+            //return to the same view
             return View(model);
         }
 
@@ -129,6 +138,8 @@ namespace RourieWebAPI.Controllers
 
 
         [Authorize]
+        //only logged-in user can do this
+        //GET Account/Logout
         public IActionResult Logout()
         {
             var login = HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -137,9 +148,10 @@ namespace RourieWebAPI.Controllers
         }
 
         [Authorize]
+        //any authorization violation comes here because 
+        //in startup.cs, when we add authorization middleware we set this
         public IActionResult AccessDenied()
         {
-            
             return View();
         }
 

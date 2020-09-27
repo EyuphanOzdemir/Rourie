@@ -50,6 +50,7 @@ namespace DBAccessLibrary
             return dbContext.Companies.Find(Id);
         }
 
+        //this will not be used for now but it may be in future
         public IEnumerable<Company> Select(int pageID, string search, int selectorId)
         {
             return dbContext.Companies.Where<Company>(u => String.IsNullOrEmpty(search) || u.Name.Contains(search)

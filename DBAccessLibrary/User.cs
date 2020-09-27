@@ -36,6 +36,9 @@ namespace DBAccessLibrary
         public int UserType { get; set; }
 
         [Display(Name = "User Type")]
+        //here actually this should not be like this
+        //but given time limitation it is ok for now
+        //normally UserType should be of an enum type
         public string UserTypeString { get { return this.UserType == 0 ? "Normal" : "Admin"; } }
     }
 }

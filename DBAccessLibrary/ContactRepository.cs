@@ -50,6 +50,8 @@ namespace DBAccessLibrary
             return dbContext.Contacts.Include(e => e.Company).FirstOrDefault(c => c.Id == Id);
         }
 
+        //order of contacts can be changed here
+        //now the last added contact is shown first
         public IEnumerable<Contact> Select(int pageID,string search, int selectorId)
         {
             return dbContext.Contacts.Where<Contact>(u => (selectorId == 0 || u.CompanyId == selectorId) &&

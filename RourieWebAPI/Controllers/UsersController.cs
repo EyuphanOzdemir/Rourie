@@ -4,19 +4,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using DBAccessLibrary;
 using Microsoft.AspNetCore.Authorization;
 using RourieWebAPI.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Security.Claims;
 using RourieWebAPI.Classes;
 
 namespace RourieWebAPI.Controllers
 {
+    //only admins can access the views of this controller
+    //users are important!
     [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
+        //as usual, here we are injecting the relevant repository
         private readonly IUserRepository userRepository;
 
         public UsersController(IUserRepository userRepository)
@@ -29,16 +30,14 @@ namespace RourieWebAPI.Controllers
         {
             return View(userRepository.GetAll().ToList());
         }
-
+        //GET Users/Create
         public IActionResult Create()
         {
             AddUserTypeListToViewBag();
             return View();
         }
 
-        // POST: Companies/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Users/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UserAddModel model)
@@ -49,6 +48,7 @@ namespace RourieWebAPI.Controllers
                     ModelState.AddModelError(string.Empty, "There is already a user with this user name");
                 else
                 {
+                    //create user and add to the DB
                     User user = new User();
                     user.UserName = model.UserName;
                     user.Password = model.Password1;
@@ -60,6 +60,7 @@ namespace RourieWebAPI.Controllers
             }
             else
             {
+                //if any unexpected validaton error show it to the user
                 foreach (var errorCollection in ModelState.Values)
                 {
                     foreach (ModelError error in errorCollection.Errors)
@@ -71,11 +72,8 @@ namespace RourieWebAPI.Controllers
             AddUserTypeListToViewBag();
             return View(model);
         }
+        
 
-
- 
-
-        #region "Delete"
         // GET: Users/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
@@ -109,23 +107,14 @@ namespace RourieWebAPI.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool AddUserTypeListToViewBag()
+        //Helper method to add the usertype select list to ViewBag
+        private void AddUserTypeListToViewBag()
         {
-            try
-            {
-                UserType type1 = new UserType("Normal",0);
-                UserType type2 = new UserType("Admin", 1);
-                List<UserType> list = new List<UserType>(){type1,type2};
-                SelectList userTypeList = new SelectList(list, "Value", "Text", 0);
-                ViewBag.UserTypeList = userTypeList;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            UserType type1 = new UserType("Normal",0);
+            UserType type2 = new UserType("Admin", 1);
+            List<UserType> list = new List<UserType>(){type1,type2};
+            SelectList userTypeList = new SelectList(list, "Value", "Text", 0);
+            ViewBag.UserTypeList = userTypeList;
         }
-
-        #endregion
     }
 }

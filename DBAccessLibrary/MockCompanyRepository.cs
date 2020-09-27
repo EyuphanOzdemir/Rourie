@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DBAccessLibrary
 {
+    //this class will be used in test project
     public class MockCompanyRepository : ICompanyRepository
     {
         private List<Company> Companies;

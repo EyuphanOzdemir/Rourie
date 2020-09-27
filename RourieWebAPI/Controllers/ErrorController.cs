@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using RourieWebAPI.Models;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace RourieWebAPI.Controllers
 {
@@ -20,31 +17,31 @@ namespace RourieWebAPI.Controllers
             this.logger = logger;
         }
 
-
-
-        [Route("500")]
+        [Route("500")] //this infamous application (server) error comes here 
         public IActionResult AppError()
         {
             // Retrieve the exception Details
             var exceptionHandlerPathFeature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            //for ogging purposes
-            ViewBag.ExceptionPath = exceptionHandlerPathFeature.Path;
-            ViewBag.ExceptionMessage = exceptionHandlerPathFeature.Error.Message;
-            ViewBag.StackTrace = exceptionHandlerPathFeature.Error.StackTrace;
+            //for logging purposes
+            StringBuilder error = new StringBuilder();
+            error.Append("\nSPECIAL LOG: EXCEPTION:");
+            error.Append("\n"+exceptionHandlerPathFeature.Path);
+            error.Append("\n"+exceptionHandlerPathFeature.Error.Message);
+            error.Append("\n"+exceptionHandlerPathFeature.Error.StackTrace);
 
             // LogError() method logs the exception under Error category in the log
-            logger.LogError($"The path {exceptionHandlerPathFeature.Path} " +
-                            $"threw an exception {exceptionHandlerPathFeature.Error}");
+            logger.LogError(error.ToString());
 
             return View();
         }
 
-        [Route("404")]
+        [Route("404")] //famous 404 error comes here
         public IActionResult PageNotFound()
         {
-            //var statusCodeResult = HttpContext.Features.Get<IStatusCodeReExecuteFeature>();
-            //logger.LogWarning($"404 error occured. Path = "+ HttpContext.Request.Path + HttpContext.Request.QueryString.Value);
+            logger.LogWarning("SPECIAL LOG: 404 error occured. Path = "+ HttpContext.Request.Path + HttpContext.Request.QueryString.Value);
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier, Explanation="404!", QueryString=HttpContext.Request.QueryString.Value});
         }
+
+        //the other error types can be handled similarly
     }
 }

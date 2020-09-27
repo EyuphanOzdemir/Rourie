@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace CommonLibrary
 {
+    //the methods and constants that can be used by other projects go here
     public static class Common
     {
         public static class Regex
@@ -25,20 +26,7 @@ namespace CommonLibrary
             var root = configurationBuilder.Build();
             return root.GetSection(section).GetSection(parameter).Value;
         }
-
-        public static int GetUserId(System.Security.Claims.ClaimsPrincipal user)
-        {
-            var userData = user.Claims.FirstOrDefault(claim => claim.Type == System.Security.Claims.ClaimTypes.UserData);
-            if (userData == null)
-                return 0;
-
-            int userId=0;
-            int.TryParse(userData.Value, out userId);
-
-            return userId;
-        }
-
-        
+   
 
     }
 }

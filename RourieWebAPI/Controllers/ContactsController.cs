@@ -30,8 +30,7 @@ namespace RourieWebAPI.Controllers
             this.logger = logger;
         }
 
-        // GET and post: contactRepository
-
+        //GET Contacts/
         public async Task<IActionResult> Index(ContactListViewModel model)
         {
             //the following line can be used to see what will happen when an exception occurs
@@ -44,6 +43,7 @@ namespace RourieWebAPI.Controllers
                 model.PageId = model.GroupCount;
 
             model.Contacts =contactRepository.Select(model.PageId, model.SearchTerm, model.SearchCompanyId).ToList();
+            //Add the company list to the view bag
             AddCompanyListToViewBag(model.SearchCompanyId, "All companies");
             int contactCount = model.Contacts.Count();
             
@@ -51,7 +51,8 @@ namespace RourieWebAPI.Controllers
             if (contactCount == 0)
                 ViewBag.Message = "No contact found!";
             else
-                ViewBag.Message = String.Format("{0} contact(s) found",contactCount);
+                ViewBag.Message = String.Format("{0} contact(s) found",contactCount); //show how many records found
+            
             return View(model);
         }
 
@@ -67,8 +68,6 @@ namespace RourieWebAPI.Controllers
         }
 
         // POST: Contacts/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ContactViewModel model)
@@ -82,14 +81,17 @@ namespace RourieWebAPI.Controllers
                     ModelState.AddModelError(String.Empty, "There is already a contact with this mobile number");
                 else
                 {
+                    //everything is fine
                     await contactRepository.AddAsync(model.contact);
                     TempData["Message"] = "Contact added successfully";
-                    logger.LogInformation(String.Format("==============The user with id {0} added a contact with name {1}==============", UserId, "\""+model.contact.Name+"\""));
+                    logger.LogInformation(String.Format("SPECIAL LOG:The user with id {0} added a contact with name {1}", UserId, "\""+model.contact.Name+"\""));
+                    //return to the contact list page
                     return RedirectToAction(nameof(Index));
                 }
             }
             else
             {
+                //again, if there is an unexpected validation error, show it to the user
                 foreach (var errorCollection in ModelState.Values)
                 {
                     foreach (ModelError error in errorCollection.Errors)
@@ -98,6 +100,7 @@ namespace RourieWebAPI.Controllers
                     }
                 }
             }
+            //if update is not successful for some reason, stay at the same page
             AddCompanyListToViewBag(model.contact.CompanyId);
             return View(model);
         }
@@ -113,13 +116,12 @@ namespace RourieWebAPI.Controllers
             return View(model);
         }
 
-        // POST: Questions/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Contacts/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(ContactViewModel model)
         {
+            //here the user will stay at the same page in any case
             if (ModelState.IsValid)
             {
                 try
@@ -149,6 +151,7 @@ namespace RourieWebAPI.Controllers
             }
             else
             {
+                //show any unexpected validation error to the user
                 foreach (var errorCollection in ModelState.Values)
                 {
                     foreach (ModelError error in errorCollection.Errors)
@@ -161,7 +164,7 @@ namespace RourieWebAPI.Controllers
             return View(model);
         }
 
-        // GET: Questions/Delete/5
+        // GET: Contacts/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var contact = await contactRepository.GetAsync(id);
@@ -173,7 +176,7 @@ namespace RourieWebAPI.Controllers
             return View(contact);
         }
 
-        // POST: Questions/Delete/5
+        // POST: Contacts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
@@ -181,10 +184,13 @@ namespace RourieWebAPI.Controllers
             if (!contactRepository.Exists(id))
                 return NotFound();
              contactRepository.Delete(id);
+            //Here we cannot use ViewBag because response will be redirected 
+            //because of below RedirectToAction
             TempData["Message"] = "Contact deleted";
             return RedirectToAction(nameof(Index));
         }
 
+        //GET Contacts/Details
         public async Task<IActionResult> Details(int id)
         {
             var contact = await contactRepository.GetAsync(id);
@@ -196,21 +202,15 @@ namespace RourieWebAPI.Controllers
             return View(contact);
         }
 
-        private bool AddCompanyListToViewBag(int companyID, string selectText="Select a company")
+        //Helper method to add company list to the viewbag
+        private void AddCompanyListToViewBag(int companyID, string selectText="Select a company")
         {
-            try
-            {
-                Utility utility = new Utility();
-                List<Company> companyList = utility.GetCompanySelectList(companyRepository, selectText);
-                SelectList companySelectList = new SelectList(companyList, "Id", "Name", companyID);
-                //companySelectList.FirstOrDefault(item => item.Value == companyID.ToString()).Selected = true;
-                ViewBag.CompanySelectList = companySelectList;
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            Utility utility = new Utility();
+            List<Company> companyList = utility.GetCompanySelectList(companyRepository, selectText);
+            SelectList companySelectList = new SelectList(companyList, "Id", "Name", companyID);
+            //another way of determining the defaul company in the list is as follow
+            //companySelectList.FirstOrDefault(item => item.Value == companyID.ToString()).Selected = true;
+            ViewBag.CompanySelectList = companySelectList;
         }
     }
 

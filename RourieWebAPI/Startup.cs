@@ -32,6 +32,7 @@ namespace RourieWebAPI
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            //adding authentication middleware
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
             {
                 options.LoginPath = "/Account/Login";
@@ -40,9 +41,11 @@ namespace RourieWebAPI
 
             services.AddMvc();
 
+            //adding our dbcontext
             services.AddDbContext<DBAccessLibrary.DataContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("DBConnection")),ServiceLifetime.Transient);
 
+            //adding our repository services
             services.AddTransient<IContactRepository, ContactRepository>();
             services.AddTransient<ICompanyRepository, CompanyRepository>();
             services.AddTransient<IUserRepository, UserRepository>();
@@ -62,35 +65,35 @@ namespace RourieWebAPI
                 app.UseDeveloperExceptionPage();
             else
                 app.UseExceptionHandler("/Error/500"); //an important middleware
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-            //app.UseStatusCodePages();
+
+            //any error goes to Error controller. Such as Error/500 or Error/404
             app.UseStatusCodePagesWithRedirects("/Error/{0}");
             //or
             //app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
             app.UseHsts();
 
             app.UseRouting();
 
             /*
             app.UseDefaultFiles();// to show default/index.html by defaulr on the root request
-            app.UseStaticFiles(); //this middleware is used to show static files
+            app.UseStaticFiles(); //this middleware is used to show static files. 
             */
             //or simply
             app.UseFileServer();
 
+            //these are needed to form authentication
             app.UseCookiePolicy();
             app.UseAuthentication();
             app.UseAuthorization();
 
-
+            //the default route pattern is set here
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Companies}/{action=Index}/{id?}");
             });
-
-
         }
     }
 }
