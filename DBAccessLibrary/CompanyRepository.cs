@@ -42,7 +42,7 @@ namespace DBAccessLibrary
 
         public IEnumerable<Company> GetAll()
         {
-            return dbContext.Companies.OrderBy(c => c.Name);
+            return dbContext.Companies.OrderByDescending(c => c.Id);
         }
 
         public Company Get(int Id)

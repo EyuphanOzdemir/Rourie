@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DBAccessLibrary.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200926062255_V2")]
-    partial class V2
+    [Migration("20200927094130_V1")]
+    partial class V1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -97,7 +97,6 @@ namespace DBAccessLibrary.Migrations
                         .HasMaxLength(250);
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(60)")
                         .HasMaxLength(60);
 
@@ -107,7 +106,8 @@ namespace DBAccessLibrary.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserName")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserName] IS NOT NULL");
 
                     b.ToTable("User");
 
@@ -115,15 +115,15 @@ namespace DBAccessLibrary.Migrations
                         new
                         {
                             Id = 1,
-                            Password = "admin",
+                            Password = "admin123",
                             UserName = "admin",
                             UserType = 1
                         },
                         new
                         {
                             Id = 2,
-                            Password = "test",
-                            UserName = "test",
+                            Password = "testuser123",
+                            UserName = "testuser",
                             UserType = 0
                         });
                 });

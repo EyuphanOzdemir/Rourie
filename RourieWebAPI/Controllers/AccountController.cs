@@ -65,7 +65,7 @@ namespace RourieWebAPI.Controllers
                 identity = new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.Name, _user.UserName),
                     new Claim(ClaimTypes.Role, "Normal"),
-
+                    new Claim(ClaimTypes.NameIdentifier, _user.Id.ToString()),
                     new Claim(ClaimTypes.UserData, _user.Id.ToString())
                 }, CookieAuthenticationDefaults.AuthenticationScheme);
             }

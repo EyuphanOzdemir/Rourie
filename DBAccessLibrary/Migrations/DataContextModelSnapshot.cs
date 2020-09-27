@@ -95,7 +95,6 @@ namespace DBAccessLibrary.Migrations
                         .HasMaxLength(250);
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(60)")
                         .HasMaxLength(60);
 
@@ -105,7 +104,8 @@ namespace DBAccessLibrary.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserName")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[UserName] IS NOT NULL");
 
                     b.ToTable("User");
 
@@ -113,15 +113,15 @@ namespace DBAccessLibrary.Migrations
                         new
                         {
                             Id = 1,
-                            Password = "admin",
+                            Password = "admin123",
                             UserName = "admin",
                             UserType = 1
                         },
                         new
                         {
                             Id = 2,
-                            Password = "test",
-                            UserName = "test",
+                            Password = "testuser123",
+                            UserName = "testuser",
                             UserType = 0
                         });
                 });

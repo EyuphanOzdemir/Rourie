@@ -31,8 +31,8 @@ namespace DBAccessLibrary
             //User table
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<User>().HasIndex(e => e.UserName).IsUnique();
-            modelBuilder.Entity<User>().HasData(new User {Id=1, UserName="admin", Password="admin", UserType=1 });
-            modelBuilder.Entity<User>().HasData(new User { Id = 2, UserName = "test", Password = "test", UserType = 0 });
+            modelBuilder.Entity<User>().HasData(new User {Id=1, UserName="admin", Password="admin123", UserType=1 });
+            modelBuilder.Entity<User>().HasData(new User { Id = 2, UserName = "testuser", Password = "testuser123", UserType = 0 });
             //Company table
             modelBuilder.Entity<Company>().ToTable("Company");
             modelBuilder.Entity<Company>().HasIndex(e => e.Name).IsUnique();

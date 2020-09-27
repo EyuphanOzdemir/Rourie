@@ -24,6 +24,9 @@
     </dl>
 </div>
 <div>
+    <a asp-action="Create" asp-controller="Contacts" asp-route-companyId="@Model.Id" class="btn btn-primary btn-custom">Add contact</a>
+    <a asp-action="Index" asp-controller="Contacts" asp-route-SearchCompanyId="@Model.Id" class="btn btn-primary btn-custom-large">Show contacts</a>
     <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary btn-custom-large m-1">Edit</a>
+    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-primary btn-custom-large m-1">Delete</a>
     <a asp-action="Index" class="btn btn-primary btn-custom-large m-1">Back to Companies</a>
 </div>

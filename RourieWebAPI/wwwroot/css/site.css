@@ -73,3 +73,7 @@ body {
 .btn-custom-large {
     width: 175px;
 }
+
+.btn-custom-xlarge {
+    width: 225px;
+}

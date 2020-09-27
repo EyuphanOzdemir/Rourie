@@ -23,6 +23,13 @@
         {
             showHeader = !ViewBag.NoHeader;
         }
+
+        bool showMessage = true;
+
+        if (ViewBag.NoMessage != null)
+        {
+            showMessage = !ViewBag.NoMessage;
+        }
     }
 
     @if (showNavigationMenu)
@@ -78,11 +85,16 @@
     <div class="container">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
-            @await Html.PartialAsync("_Message")
+            @if (showMessage)
+            {
+                @await Html.PartialAsync("_Message")
+            }
+            
             @if (showHeader)
             {
                 <h1>@ViewData["Title"]</h1>
             }
+            
             @RenderBody()
         </main>
     </div>

@@ -2,7 +2,7 @@
 
 namespace DBAccessLibrary.Migrations
 {
-    public partial class initial : Migration
+    public partial class V1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,7 +26,7 @@ namespace DBAccessLibrary.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(maxLength: 60, nullable: false),
+                    UserName = table.Column<string>(maxLength: 60, nullable: true),
                     Password = table.Column<string>(maxLength: 250, nullable: false),
                     UserType = table.Column<int>(nullable: false)
                 },
@@ -61,7 +61,12 @@ namespace DBAccessLibrary.Migrations
             migrationBuilder.InsertData(
                 table: "User",
                 columns: new[] { "Id", "Password", "UserName", "UserType" },
-                values: new object[] { 1, "admin", "admin", 1 });
+                values: new object[] { 1, "admin123", "admin", 1 });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "Id", "Password", "UserName", "UserType" },
+                values: new object[] { 2, "testuser123", "testuser", 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Company_Name",
@@ -83,7 +88,8 @@ namespace DBAccessLibrary.Migrations
                 name: "IX_User_UserName",
                 table: "User",
                 column: "UserName",
-                unique: true);
+                unique: true,
+                filter: "[UserName] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
