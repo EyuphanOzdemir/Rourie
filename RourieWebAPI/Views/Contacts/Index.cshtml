@@ -33,6 +33,8 @@
     }
 }
 
+
+
 <p>
     <a asp-action="Create" class="btn btn-primary btn-custom-large">Create New Contact</a>
     <button class="btn btn-primary btn-custom-large" type="button" data-toggle="collapse" data-target="#searchPanel" aria-expanded="false" aria-controls="searchPanel">
@@ -61,22 +63,19 @@
 </div>
 
 <div class="tab-pane">
-@if (prevId > 0)
-{
-    <a class="btn btn-primary m-0 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="1" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> First  </a>
-    <a class="btn btn-primary m-1 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="@prevId" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> Previous   </a>
-}
+    @if (prevId > 0)
+    {
+        <a class="btn btn-primary m-0 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="1" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> First  </a>
+        <a class="btn btn-primary m-1 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="@prevId" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> Previous   </a>
+    }
 
 
-@if (nextId <= Model.GroupCount)
-{
-    <a class="btn btn-primary m-1 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="@nextId" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> Next</a>
-    <a class="btn btn-primary m-1 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="@Model.GroupCount" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> Last  </a>
-}
+    @if (nextId <= Model.GroupCount)
+    {
+        <a class="btn btn-primary m-1 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="@nextId" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> Next</a>
+        <a class="btn btn-primary m-1 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="@Model.GroupCount" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> Last  </a>
+    }
 </div>
-
-
-@await Html.PartialAsync("_Message")
 
 <table class="table">
     <tbody>

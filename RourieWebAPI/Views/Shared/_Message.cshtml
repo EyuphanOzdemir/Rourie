@@ -1,8 +1,17 @@
-﻿@if (ViewBag.Message!=null)
-{
-    <h8 class="message">@ViewBag.Message</h8>
+﻿@{
+    var message = "";
+    if (ViewBag.Message != null)
+        message = @ViewBag.Message;
+    else if (TempData["Message"] != null)
+        message = (string)TempData["Message"];
+
+    if (!String.IsNullOrEmpty(message))
+    {
+        <div class="alert alert-success" id="success-alert">
+            <button type="button" class="close" data-dismiss="alert">x</button>
+            @message
+        </div>
+    }
 }
-else @if (TempData["Message"] != null)
-{
-    <h8 class="message">@TempData["Message"]</h8>
-}
+
+

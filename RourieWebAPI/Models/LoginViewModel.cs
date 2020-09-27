@@ -12,7 +12,7 @@ namespace RourieWebAPI.Models
         [Required]
         public string UserName { get; set; }
 
-        [StringLength(8), MinLength(1)]
+        [MinLength(1)]
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }

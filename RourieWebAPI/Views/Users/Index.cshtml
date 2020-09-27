@@ -4,42 +4,36 @@
     ViewData["Title"] = "Users";
 }
 
-@await Html.PartialAsync("_Message")
+
 
 <p>
-    <a asp-action="Create">Create User</a>
+    <a asp-action="Create" class="btn btn-primary btn-custom-large">Create User</a>
 </p>
 
-
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                <span value="User name">User name</span>
-            </th>
-            <th>
-                <span value="User Type">User Type</span>
-            </th>
-        </tr>
-    </thead>
     <tbody>
         @foreach (var item in Model)
         {
             var userType = item.UserType == 0 ? "Normal" : "Admin";
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.UserName)
-            </td>
-            <td>
-                @Html.Label(userType)
-            </td>
-            <td>
-                @if (item.UserType == 0)
-                {
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                }
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    <div class="card m-3">
+                        <div class="card-header text-center">
+                            <div>
+                                <span>User Name:</span>
+                                <span><strong>@Html.DisplayFor(modelItem => item.UserName)</strong></span>
+                            </div>
+                            <div>
+                                <span>User Type:</span>
+                                <span><strong>@Html.Label(userType)</strong></span>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary btn-custom">Delete</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

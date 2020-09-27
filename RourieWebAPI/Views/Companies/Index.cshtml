@@ -4,18 +4,17 @@
     ViewData["Title"] = "Companies";
 }
 
-
-
 <p>
-    <a asp-action="Create">Create New Company</a>
+    <a asp-action="Create" class="btn btn-primary btn-custom-large">Create New Company</a>
 </p>
 
-@await Html.PartialAsync("_Message")
 
 @if (Model.Count() == 0)
 {
-    <h8 class="message">There is no company in the system. Please start defining companies...</h8>
-
+    <div class="alert alert-warning" id="success-alert">
+        <button type="button" class="close" data-dismiss="alert">x</button>
+        There is no company in the system. Please start defining a company.
+    </div>
 }
 else
 {
@@ -25,7 +24,7 @@ else
             {
                 <tr>
                     <td>
-                        <div class="card m-3">
+                        <div class="card m-3 text-center">
                             <div class="card-header">
                                 <h3>@item.Name</h3>
                             </div>
@@ -42,5 +41,7 @@ else
             }
         </tbody>
     </table>
+
+
 
 }
