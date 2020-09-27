@@ -4,59 +4,59 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Rourier</title>
-    <link href="~/lib/bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="~/css/site.css" />
-    <script src="~/lib/jquery/jquery.js"></script>
-    <script src="~/lib/bootstrap/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 </head>
 <body>
-    @{ 
-        bool showHeader = true;
-        if (ViewBag.NoHeader != null) {
-            showHeader = !ViewBag.NoHeader; 
-        }
-    }
-    
-    @if (showHeader)
-    {
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark navbar-dark border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="nav navbar-nav flex-grow-1">
                         @{
 
                             if (User.Identity.IsAuthenticated)
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Companies" asp-action="Index">Companies</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Companies" asp-action="Index">Companies</a>
                                 </li>
-
 
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Contacts" asp-action="Index">Contacts</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Companies" asp-action="Create">Create Company</a>
                                 </li>
 
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Contacts" asp-action="Index">Contacts</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Contacts" asp-action="Create">Create Contact</a>
+                                </li>
 
                                 @if (User.IsInRole("Admin"))
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Index">Users</a>
                                     </li>
 
+
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Users" asp-action="Create">Create User</a>
+                                    </li>
                                 }
 
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Account" asp-action="ChangePassword">Change Password</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="ChangePassword">Change Password</a>
                                 </li>
 
                                 <li class="nav-item">
-                                    <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Logout">Log out</a>
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Logout">Log out</a>
                                 </li>
 
                             }
@@ -67,11 +67,10 @@
             </div>
         </nav>
     </header>
-}
     <div class="container">
         <partial name="_CookieConsentPartial" />
         <main role="main" class="pb-3">
-            @if (showHeader)
+            @if (ViewBag.NoHeader!=null && ViewBag.NoHeader==false)
             {
                 <h1>@ViewData["Title"]</h1>
             }

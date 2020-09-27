@@ -160,7 +160,7 @@ namespace RourieWebAPI.Controllers
                 return NotFound();
 
             companyRepository.Delete(id);
-            TempData["Message"] = "Company deleted";
+            TempData["Message"] = "The company deleted.";
             return RedirectToAction(nameof(Index));
         }
     }

@@ -60,3 +60,7 @@ body {
 .message{
     color:red;
 }
+
+.specialBGColor{
+    background-color:blue;
+}

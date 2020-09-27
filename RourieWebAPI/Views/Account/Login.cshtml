@@ -2,30 +2,39 @@
 
 @{
     ViewData["Title"] = "Login";
+    ViewBag.NoHeader = true;
 }
-@await Html.PartialAsync("_Message")
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Login" asp-route-ReturnUrl="@ViewBag.returnUrl">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="UserName" class="control-label"></label>
-                <input asp-for="UserName" class="form-control" />
-                <span asp-validation-for="UserName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
 
-                <input asp asp-for="ReturnUrl" class="form-control" type="hidden" value=Context.Request.QueryString />
+<link href="~/css/login.css" rel="stylesheet" />
+<div class="container h-100">
+    <div class="d-flex justify-content-center h-100">
+        <div class="user_card">
+            <div class="d-flex justify-content-center">
+                <div class="brand_logo_container">
+                    <img src="~/images/logo.jpg" class="brand_logo" alt="Logo">
+                </div>
+            </div>
+            <div class="d-flex justify-content-center form_container">
+                <form asp-action="Login" asp-route-ReturnUrl="@ViewBag.returnUrl">
+                    <div class="input-group mb-3">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        </div>
 
+                        <input type="text" asp-for=UserName class="form-control input_user" value="" placeholder="username">
+                    </div>
+                    <div class="input-group mb-2">
+                        <div class="input-group-append">
+                            <span class="input-group-text"><i class="fas fa-key"></i></span>
+                        </div>
+                        <input asp-for=Password type="password" class="form-control input_pass" value="" placeholder="password">
+                    </div>
+                    <div class="d-flex justify-content-center mt-3 login_container">
+                        <input type="submit" value="Login" class="btn login_btn" />
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Login" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
