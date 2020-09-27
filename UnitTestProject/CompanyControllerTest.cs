@@ -12,7 +12,7 @@ namespace Controllers
         public void Index()
         {
             // Arrange
-            CompaniesController controller = new CompaniesController(new MockCompanyRepository(), null);
+            CompaniesController controller = new CompaniesController(new MockCompanyRepository(),null, null);
             // Act
             ViewResult result = controller.Index() as ViewResult;
             // Assert
@@ -25,7 +25,7 @@ namespace Controllers
         {
             // Arrange
             MockCompanyRepository mockCompanyRepository = new MockCompanyRepository();
-            CompaniesController controller = new CompaniesController(mockCompanyRepository, null);
+            CompaniesController controller = new CompaniesController(mockCompanyRepository,null, null);
             int oldCompanyCount = mockCompanyRepository.CountAll();
             // Act
             Company company = new Company() { Id = 3, Address = "TestAddress", Name = "TestName" };

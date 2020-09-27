@@ -11,7 +11,8 @@ namespace CommonLibrary
     {
         public static class Regex
         {
-            public const string PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+            public const string PASSWORD_REGEX= @"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$";
+            public const string PASSWORD_ERROR_MESSAGE = "The password should be at least 8 characters, and include at least and only an alphabet and a number";
         }
 
 

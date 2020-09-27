@@ -1,9 +1,22 @@
-﻿
-<h3>
-    An occured while processing your request. The support
-    team is notified and we are working on the fix
-</h3>
-<h5>Please contact me on ozdemireyuphan@gmail.com</h5>
+﻿@model RourieWebAPI.Models.ErrorViewModel
+@{
+    ViewData["Title"] = "Exception occurred!";
+    ViewBag.NoHeader = true;
+}
+
+<div class="alert alert-danger" id="danger-alert">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    <p>
+        An exception occured while processing your request. 
+        The support team is notified and we are working on the fix.
+    </p>
+    <p>
+        Please contact me on ozdemireyuphan@gmail.com.
+    </p>
+</div>
+
 <p>
-    @Html.ActionLink("Go to companies", "Index", "Companies")
+    <a asp-action="Index" asp-controller="Companies" class="btn btn-primary btn-custom-large m-1">Back to Companies</a>
 </p>
+
+

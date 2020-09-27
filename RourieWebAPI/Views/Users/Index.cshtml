@@ -14,7 +14,6 @@
     <tbody>
         @foreach (var item in Model)
         {
-            var userType = item.UserType == 0 ? "Normal" : "Admin";
             <tr>
                 <td>
                     <div class="card m-3">
@@ -25,7 +24,7 @@
                             </div>
                             <div>
                                 <span>User Type:</span>
-                                <span><strong>@Html.Label(userType)</strong></span>
+                                <span><strong>@Html.DisplayFor(model => item.UserTypeString)</strong></span>
                             </div>
                         </div>
                         <div class="card-footer text-center">

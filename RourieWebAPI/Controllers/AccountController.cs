@@ -98,9 +98,19 @@ namespace RourieWebAPI.Controllers
             {
                 var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); // will give the user's userId
                 User user = userRepository.Get(int.Parse(userId));
-                user.Password = model.Password1;
-                await userRepository.UpdateAsync(user);
-                ViewBag.Message = "Password was changed successfuly";
+                //check if there is such a user
+                if (user == null)
+                    return NotFound();
+                
+                //check if current password matches
+                if (user.Password!=model.CurrentPassword)
+                    ViewBag.Message = "Current password does not match!";
+                else
+                {
+                    user.Password = model.Password1;
+                    await userRepository.UpdateAsync(user);
+                    ViewBag.Message = "Password was changed successfuly";
+                }
             }
             else
             {

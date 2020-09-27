@@ -7,12 +7,16 @@ using System.Threading.Tasks;
 
 namespace RourieWebAPI.Models
 {
-    public class ChangePasswordModel
+    public class UserAddModel
     {
-        [Required]
-        [DataType(DataType.Password)]
-        [Display(Name = "Current Password")]
-        public string CurrentPassword { get; set; }
+        [Display(Name ="User Type")]
+        public int UserType { get; set;}
+        
+        
+        [StringLength(60)]
+        [MinLength(5, ErrorMessage = "The username should be at least 5 characters")]
+        public string UserName { get; set; }
+
 
         [Required]
         [DataType(DataType.Password)]
@@ -29,13 +33,7 @@ namespace RourieWebAPI.Models
         [Display(Name ="Confirm Password")]
         public string Password2 { get; set; }
 
-        public ChangePasswordModel(string password1="", string password2="")
-        {
-            this.Password1 = password1;
-            this.Password2 = password2;
-        }
-
-        public ChangePasswordModel()
+        public UserAddModel()
         {
 
         }

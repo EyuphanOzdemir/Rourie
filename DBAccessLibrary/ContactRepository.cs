@@ -97,6 +97,11 @@ namespace DBAccessLibrary
             return dbContext.Contacts.Any(c => c.MobileNumber == mobileNumber && c.Id != exceptContactId);
         }
 
+        public int CountByCompany(int companyId)
+        {
+            return dbContext.Contacts.Count(c => c.CompanyId == companyId);
+        }
+
         //Async methods
         public async Task<Contact> AddAsync(Contact contact)
         {

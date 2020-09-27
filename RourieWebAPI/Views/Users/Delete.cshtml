@@ -8,17 +8,26 @@
 <div>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UserName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.UserName)
         </dd>
     </dl>
-    
+
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.UserTypeString)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.UserTypeString)
+        </dd>
+    </dl>
+
     <form asp-action="Delete">
         <input type="hidden" asp-for=Id />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Delete" class="btn btn-danger btn-custom m-1" />
+        <a asp-action="Index" class="btn btn-primary btn-custom-large m-1">Back to Users</a>
     </form>
 </div>

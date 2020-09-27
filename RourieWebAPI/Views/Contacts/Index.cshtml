@@ -99,6 +99,7 @@
                             </div>
                         </div>
                         <div class="card-footer text-center">
+                            <a asp-action="Details" asp-controller="Companies" asp-route-id="@item.CompanyId" class="btn btn-primary btn-custom-large">Go to company</a>
                             <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-custom">Edit</a>
                             <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-custom">Details</a>
                             <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary btn-custom">Delete</a>

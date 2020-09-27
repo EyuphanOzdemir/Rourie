@@ -13,6 +13,7 @@ namespace DBAccessLibrary
         public Company Update(Company company);
         public Company Delete(int id);
         public int Count(string search, int selectorId);
+
         public int CountAll();
         public IEnumerable<Company> Select(int pageID, string search, int selectorId);
         public bool Exists(int id);

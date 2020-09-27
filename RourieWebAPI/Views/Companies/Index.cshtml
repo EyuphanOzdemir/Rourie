@@ -4,19 +4,20 @@
     ViewData["Title"] = "Companies";
 }
 
+@if (Model.Count() == 0)
+{
+    <div class="alert alert-warning" id="warning-alert">
+        <button type="button" class="close" data-dismiss="alert">x</button>
+        There is no company in the system. Please start defining a company.
+    </div>
+}
+
 <p>
     <a asp-action="Create" class="btn btn-primary btn-custom-large">Create New Company</a>
 </p>
 
 
-@if (Model.Count() == 0)
-{
-    <div class="alert alert-warning" id="success-alert">
-        <button type="button" class="close" data-dismiss="alert">x</button>
-        There is no company in the system. Please start defining a company.
-    </div>
-}
-else
+@if (Model.Count() > 0)
 {
     <table class="table">
         <tbody>
@@ -30,6 +31,7 @@ else
                             </div>
                             <div class="card-footer text-center">
                                 <a asp-action="Create" asp-controller="Contacts" asp-route-companyId="@item.Id" class="btn btn-primary btn-custom">Add contact</a>
+                                <a asp-action="Index" asp-controller="Contacts" asp-route-SearchCompanyId="@item.Id" class="btn btn-primary btn-custom-large">Show contacts</a>
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-custom">Edit</a>
                                 <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-custom">Details</a>
                                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary btn-custom">Delete</a>

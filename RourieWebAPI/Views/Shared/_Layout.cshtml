@@ -10,14 +10,22 @@
 </head>
 <body>
     @{
+        bool showNavigationMenu = true;
+
+        if (ViewBag.NoNavigationMenu != null)
+        {
+            showNavigationMenu = !ViewBag.NoNavigationMenu;
+        }
+
         bool showHeader = true;
+
         if (ViewBag.NoHeader != null)
         {
             showHeader = !ViewBag.NoHeader;
         }
     }
 
-    @if (showHeader)
+    @if (showNavigationMenu)
     {
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-dark navbar-dark border-bottom box-shadow mb-3">

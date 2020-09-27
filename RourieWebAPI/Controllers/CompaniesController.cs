@@ -17,12 +17,14 @@ namespace RourieWebAPI.Controllers
     public class CompaniesController : Controller
     {
         private readonly ICompanyRepository companyRepository;
+        private readonly IContactRepository contactRepository;
         private readonly ILogger<CompaniesController> logger;
         private string UserId { get {return User.FindFirstValue(ClaimTypes.NameIdentifier);} }
 
-        public CompaniesController(ICompanyRepository companyRepository, ILogger<CompaniesController> logger)
+        public CompaniesController(ICompanyRepository companyRepository, IContactRepository contactRepository, ILogger<CompaniesController> logger)
         {
             this.companyRepository = companyRepository;
+            this.contactRepository = contactRepository;
             this.logger = logger;
         }
 
@@ -148,6 +150,10 @@ namespace RourieWebAPI.Controllers
             var company = await companyRepository.GetASync(id);
             if (company == null)
                 return NotFound();
+
+            if (contactRepository!=null)
+            if (contactRepository.CountByCompany(company.Id) > 0)
+                ViewBag.Warning = true;
             return View(company);
         }
 

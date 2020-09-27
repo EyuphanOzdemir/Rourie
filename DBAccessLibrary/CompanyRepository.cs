@@ -89,6 +89,7 @@ namespace DBAccessLibrary
             return dbContext.Companies.Count();
         }
 
+
         //Async methods
         public async Task<Company> AddAsync(Company company)
         {
@@ -128,7 +129,6 @@ namespace DBAccessLibrary
             await dbContext.SaveChangesAsync();
             return company;
         }
-
 
     }
 }

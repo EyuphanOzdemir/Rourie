@@ -1,18 +1,16 @@
 ﻿@model RourieWebAPI.Models.ErrorViewModel
 @{
     ViewData["Title"] = "Page Not Found";
+    ViewBag.NoHeader = true;
 }
 
-<h8 class="text-danger message">The resource cannot be found!</h8>
-@if (Model.ShowRequestId)
-{
-<p>
-    <strong>Request ID:</strong> <code> @Model.RequestId </code>
-    <strong>Response code:</strong> <code> @Model.Explanation</code>
-</p>
+<div class="alert alert-danger" id="danger-alert">
+    <button type="button" class="close" data-dismiss="alert">x</button>
+    The resource cannot be found!
+</div>
 
 <p>
-    @Html.ActionLink("Go to companies","Index", "Companies")
+    <a asp-action="Index" asp-controller="Companies" class="btn btn-primary btn-custom-large m-1">Back to Companies</a>
 </p>
-}
+
 

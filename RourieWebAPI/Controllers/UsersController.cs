@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using RourieWebAPI.Models;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.Security.Claims;
+using RourieWebAPI.Classes;
 
 namespace RourieWebAPI.Controllers
 {
@@ -31,6 +32,7 @@ namespace RourieWebAPI.Controllers
 
         public IActionResult Create()
         {
+            AddUserTypeListToViewBag();
             return View();
         }
 
@@ -39,20 +41,22 @@ namespace RourieWebAPI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(User user)
+        public async Task<IActionResult> Create(UserAddModel model)
         {
             if (ModelState.IsValid)
             {
-                if (userRepository.NameExists(user.UserName))
-                {
+                if (userRepository.NameExists(model.UserName))
                     ModelState.AddModelError(string.Empty, "There is already a user with this user name");
-                    return View(user);
+                else
+                {
+                    User user = new User();
+                    user.UserName = model.UserName;
+                    user.Password = model.Password1;
+                    user.UserType = model.UserType;
+                    await userRepository.AddAsync(user);
+                    TempData["Message"] = "User successfuly added";
+                    return RedirectToAction(nameof(Index));
                 }
-                
-                user.UserType = 0;
-                await userRepository.AddAsync(user);
-                TempData["Message"] = "User successfuly added";
-                return RedirectToAction(nameof(Index));
             }
             else
             {
@@ -63,8 +67,9 @@ namespace RourieWebAPI.Controllers
                         ModelState.AddModelError(String.Empty, error.ErrorMessage);
                     }
                 }
-                return View(user);
             }
+            AddUserTypeListToViewBag();
+            return View(model);
         }
 
 
@@ -103,6 +108,24 @@ namespace RourieWebAPI.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+
+        private bool AddUserTypeListToViewBag()
+        {
+            try
+            {
+                UserType type1 = new UserType("Normal",0);
+                UserType type2 = new UserType("Admin", 1);
+                List<UserType> list = new List<UserType>(){type1,type2};
+                SelectList userTypeList = new SelectList(list, "Value", "Text", 0);
+                ViewBag.UserTypeList = userTypeList;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         #endregion
     }
 }

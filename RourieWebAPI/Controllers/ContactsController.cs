@@ -45,6 +45,13 @@ namespace RourieWebAPI.Controllers
 
             model.Contacts =contactRepository.Select(model.PageId, model.SearchTerm, model.SearchCompanyId).ToList();
             AddCompanyListToViewBag(model.SearchCompanyId, "All companies");
+            int contactCount = model.Contacts.Count();
+            
+            if (!String.IsNullOrEmpty(model.SearchTerm) || model.SearchCompanyId>0) //if there is a search
+            if (contactCount == 0)
+                ViewBag.Message = "No contact found!";
+            else
+                ViewBag.Message = String.Format("{0} contact(s) found",contactCount);
             return View(model);
         }
 

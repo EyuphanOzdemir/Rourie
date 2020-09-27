@@ -20,6 +20,8 @@ namespace DBAccessLibrary
         public bool EmailExists(string email, int exceptContactId);
         public bool EmailExists(string email);
 
+        public int CountByCompany(int companyId);
+
         //async methods
         public Task<Contact> GetAsync(int Id);
         public Task<Contact> AddAsync(Contact contact);

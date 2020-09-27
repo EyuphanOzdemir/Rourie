@@ -28,10 +28,14 @@ namespace DBAccessLibrary
         [StringLength(250)]
         [Required]
         [DataType(DataType.Password)]
-        [RegularExpression(CommonLibrary.Common.Regex.PASSWORD_REGEX, 
-            ErrorMessage = "The password should be 8 characters, and contain at least 1 Alphabet, 1 Number or 1 Special Character")]
+        [RegularExpression(CommonLibrary.Common.Regex.PASSWORD_REGEX,
+            ErrorMessage = CommonLibrary.Common.Regex.PASSWORD_ERROR_MESSAGE)]
         public string Password { get; set; }
 
+        [Display(Name ="User Type")]
         public int UserType { get; set; }
+
+        [Display(Name = "User Type")]
+        public string UserTypeString { get { return this.UserType == 0 ? "Normal" : "Admin"; } }
     }
 }
