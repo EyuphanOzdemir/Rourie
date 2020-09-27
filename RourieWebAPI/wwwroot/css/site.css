@@ -61,6 +61,15 @@ body {
     color:red;
 }
 
-.specialBGColor{
-    background-color:blue;
+
+.btn-custom {
+    width: 125px;
+}
+
+.btn-navigation {
+    color: yellow;
+}
+
+.btn-custom-large {
+    width: 175px;
 }

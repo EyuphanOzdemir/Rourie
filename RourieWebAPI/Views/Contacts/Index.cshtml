@@ -18,9 +18,6 @@
 
 
 
-<p>
-    <a asp-action="Create">Create New Contact</a>
-</p>
 @{
     var prevId = @Model.PageId - 1;
     var nextId = @Model.PageId + 1;
@@ -36,12 +33,18 @@
     }
 }
 
-<div class="row">
+<p>
+    <a asp-action="Create" class="btn btn-primary btn-custom-large">Create New Contact</a>
+    <button class="btn btn-primary btn-custom-large" type="button" data-toggle="collapse" data-target="#searchPanel" aria-expanded="false" aria-controls="searchPanel">
+        Search contact
+    </button>
+</p>
+<div class="row text-center collapse" id="searchPanel">
     <div class="col-md-4">
         <form asp-action="Index" method="get">
             <fieldset>
                 <legend class="mylegend">Search contacts</legend>
-                <div class="form-group">
+                <div class="form-group text-left">
                     <label class="control-label">Company:</label>
                     <select asp-for=SearchCompanyId class="form-control" asp-items="@ViewBag.CompanySelectList"></select>
                     <label asp-for=SearchTerm class="control-label">Name:</label>
@@ -50,69 +53,61 @@
                     <span>@rowCountMessage</span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="Search" class="btn btn-primary" />
+                    <input type="submit" value="Search" class="btn btn-primary btn-custom" />
                 </div>
             </fieldset>
         </form>
     </div>
 </div>
 
-<br />
-<br />
-
-<div class="row">
-
-    @if (prevId > 0)
-    {
-        <a asp-action="Index" asp-route-pageId="1" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> First 10  </a>
-        <a asp-action="Index" asp-route-pageId="@prevId" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> | Previous 10  </a>
-    }
+<div class="tab-pane">
+@if (prevId > 0)
+{
+    <a class="btn btn-primary m-0 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="1" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> First  </a>
+    <a class="btn btn-primary m-1 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="@prevId" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> Previous   </a>
+}
 
 
-    @if (nextId <= Model.GroupCount)
-    {
-        <a asp-action="Index" asp-route-pageId="@nextId" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> | Next 10  </a>
-        <a asp-action="Index" asp-route-pageId="@Model.GroupCount" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> | Last 10  </a>
-    }
-
+@if (nextId <= Model.GroupCount)
+{
+    <a class="btn btn-primary m-1 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="@nextId" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> Next</a>
+    <a class="btn btn-primary m-1 btn-custom btn-navigation" asp-action="Index" asp-route-pageId="@Model.GroupCount" asp-route-SearchTerm="@Model.SearchTerm" asp-route-SearchCompanyId="@Model.SearchCompanyId"> Last  </a>
+}
 </div>
+
 
 @await Html.PartialAsync("_Message")
 
 <table class="table">
-    <thead>
-        <tr>
-            <th>
-                <span value="Name">Company</span>
-            </th>
-            <th>
-                <span value="Name">Name</span>
-            </th>
-            <th>
-                <span value="Job Title">Job Title</span>
-            </th>
-        </tr>
-    </thead>
     <tbody>
         @foreach (var item in Model.Contacts)
         {
-            string text = item.Name.Length > 20 ? item.Name.Substring(0, 20) + "..." : item.Name;
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Company.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.JobTitle)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    <div class="card m-3">
+                        <div class="card-header text-center">
+                            <div>
+                                <span>Contact name:</span>
+                                <span><strong>@Html.DisplayFor(modelItem => item.Name)</strong></span>
+                            </div>
+                            <div>
+                                <span>Company:</span>
+                                <span><strong>@Html.DisplayFor(modelItem => item.Company.Name)</strong></span>
+                            </div>
+                            <div>
+                                <span>Job title:</span>
+                                <span><strong>@Html.DisplayFor(modelItem => item.JobTitle)</strong></span>
+                            </div>
+                        </div>
+                        <div class="card-footer text-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary btn-custom">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary btn-custom">Details</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-primary btn-custom">Delete</a>
+                        </div>
+                    </div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+

@@ -36,7 +36,7 @@ namespace RourieWebAPI.Controllers
         {
             ViewBag.returnUrl = returnUrl;
             if (!ModelState.IsValid)
-                return View();
+                return View(loginModel);
 
 
             ClaimsIdentity identity = null;
@@ -45,8 +45,8 @@ namespace RourieWebAPI.Controllers
 
             if (_user == null)
             {
-                ModelState.AddModelError(String.Empty, "There is no such a user. Please try again.");
-                return View();
+                ViewBag.Message = "Please try again...";
+                return View(loginModel);
             }
             else
             if (_user.UserType == 1)
