@@ -21,6 +21,8 @@ jobs:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
     - name: Azure login
       uses: azure/login@v1
+      with:
+        creds: ${{ secrets.managedEnvContainer_SPN }}
     - name: Container App deploy
       uses: azure/container-apps-deploy-action@v1
       with:
